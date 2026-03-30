@@ -22,4 +22,8 @@
     <Using Include="FluentAssertions"/>
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\WellAnalyzer.Core\WellAnalyzer.Core.csproj"/>
+  </ItemGroup>
+
 </Project>
