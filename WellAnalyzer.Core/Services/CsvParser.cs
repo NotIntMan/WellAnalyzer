@@ -24,18 +24,20 @@ public class CsvParser
     {
         using var csv = new CsvReader(reader, _config);
 
-        var rows = new List<WellCsvRow>();
+        var rows = new List<(WellCsvRow Row, int LineNumber)>();
         await foreach (var row in csv.GetRecordsAsync<WellCsvRow>())
         {
-            rows.Add(row);
+            rows.Add((row, csv.Parser.Row));
         }
 
         return rows
-            .GroupBy(r => r.WellId)
+            .GroupBy(r => r.Row.WellId)
             .Select(g =>
             {
-                var first = g.First();
-                var intervals = g.Select(r => new Interval(r.DepthFrom, r.DepthTo, r.Rock, r.Porosity)).ToList();
+                var first = g.First().Row;
+                var intervals = g
+                    .Select(r => new Interval(r.LineNumber, r.Row.DepthFrom, r.Row.DepthTo, r.Row.Rock, r.Row.Porosity))
+                    .ToList();
                 return new Well(first.WellId, first.X, first.Y, intervals);
             })
             .ToList();

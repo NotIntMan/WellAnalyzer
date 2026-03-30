@@ -15,7 +15,7 @@ public class CsvParserTests
         var wells = await _sut.ParseAsync(reader);
 
         wells.Should().BeEquivalentTo([
-            new Well("A-001", 82.10, 55.20, [new Interval(10, 25, "Limestone", 0.07)])
+            new Well("A-001", 82.10, 55.20, [new Interval(1, 10, 25, "Limestone", 0.07)])
         ]);
     }
 
