@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="WellAnalyzer.App\WellAnalyzer.App.csproj" Type="Classic C#" />
+  <Project Path="WellAnalyzer.Core.Tests\WellAnalyzer.Core.Tests.csproj" Type="Classic C#" />
+  <Project Path="WellAnalyzer.Core\WellAnalyzer.Core.csproj" Type="Classic C#" />
+</Solution>
