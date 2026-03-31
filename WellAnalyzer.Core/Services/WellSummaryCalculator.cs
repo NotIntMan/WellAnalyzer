@@ -13,7 +13,7 @@ public class WellSummaryCalculator
     {
         var intervals = well.Intervals;
         var totalDepth = intervals.Count > 0
-            ? intervals.Max(i => i.DepthTo) - intervals.Min(i => i.DepthFrom)
+            ? intervals.Max(i => i.DepthTo)
             : 0;
         var intervalCount = intervals.Count;
         var totalIntervalWidth = intervals.Sum(i => i.Width);

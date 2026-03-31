@@ -1,2 +1,15 @@
-# WellAnalyzer
-Test assignment
+﻿# WellAnalyzer
+
+Приложение для загрузки данных по скважинам из CSV, проверки интервалов на ошибки и получения сводки по каждой скважине.
+
+## Запуск
+
+Требования: .NET SDK 8
+
+Для запуска проекта используйте команду:
+
+```bash
+dotnet run --project WellAnalyzer.App/WellAnalyzer.App.csproj
+```
+
+Для примера входных данных можно использовать файл `samples/test.csv`.

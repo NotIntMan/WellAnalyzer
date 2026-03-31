@@ -1,11 +1,12 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using Avalonia.Markup.Xaml;
+using WellAnalyzer.App.Services;
 using WellAnalyzer.App.ViewModels;
 using WellAnalyzer.App.Views;
+using WellAnalyzer.Core.Services;
 
 namespace WellAnalyzer.App;
 
@@ -23,10 +24,16 @@ public partial class App : Application
             // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
             // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
             DisableAvaloniaDataAnnotationValidation();
-            desktop.MainWindow = new MainWindow
-            {
-                DataContext = new MainWindowViewModel(),
-            };
+
+            var mainWindow = new MainWindow();
+            mainWindow.DataContext = new MainWindowViewModel(
+                new DialogService(mainWindow),
+                new CsvParser(),
+                new WellValidator(),
+                new WellSummaryCalculator(),
+                new WellSummaryExporter()
+            );
+            desktop.MainWindow = mainWindow;
         }
 
         base.OnFrameworkInitializationCompleted();
