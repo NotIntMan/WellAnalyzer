@@ -76,10 +76,17 @@ public partial class MainWindowViewModel : ViewModelBase
             }
 
             var filePath = files[0].Path.LocalPath;
-            var wells = await _csvParser.ParseAsync(filePath);
-            Errors = _validator.Validate(wells);
-            Summaries = _calculator.Calculate(wells);
 
+            var (summaries, errors) = await Task.Run(async () =>
+            {
+                var wells = await _csvParser.ParseAsync(filePath);
+                var summaries = _calculator.Calculate(wells);
+                var errors = _validator.Validate(wells);
+                return (summaries, errors);
+            });
+
+            Summaries = summaries;
+            Errors = errors;
             StatusMessage = $"Импортировано: {filePath}";
         }
         catch (Exception ex)
@@ -113,8 +120,12 @@ public partial class MainWindowViewModel : ViewModelBase
                 return;
             }
 
-            await using var stream = await file.OpenWriteAsync();
-            await _exporter.ExportAsync(stream, Summaries);
+            await Task.Run(async () =>
+            {
+                await using var stream = await file.OpenWriteAsync();
+                await _exporter.ExportAsync(stream, Summaries);
+            });
+
             StatusMessage = $"Экспортировано: {file.Name}";
         }
         catch (Exception ex)
