@@ -20,6 +20,8 @@ public partial class MainWindowViewModel : ViewModelBase
 
     [ObservableProperty] private string _statusMessage = "Выберите CSV-файл для импорта.";
 
+    [ObservableProperty] private bool _isStatusError;
+
     [ObservableProperty] private IReadOnlyList<WellSummary> _summaries = [];
 
     [ObservableProperty]
@@ -87,10 +89,12 @@ public partial class MainWindowViewModel : ViewModelBase
 
             Summaries = summaries;
             Errors = errors;
+            IsStatusError = false;
             StatusMessage = $"Импортировано: {filePath}";
         }
         catch (Exception ex)
         {
+            IsStatusError = true;
             StatusMessage = $"Ошибка импорта: {ex.Message}";
         }
     }
@@ -126,10 +130,12 @@ public partial class MainWindowViewModel : ViewModelBase
                 await _exporter.ExportAsync(stream, Summaries);
             });
 
+            IsStatusError = false;
             StatusMessage = $"Экспортировано: {file.Name}";
         }
         catch (Exception ex)
         {
+            IsStatusError = true;
             StatusMessage = $"Ошибка экспорта: {ex.Message}";
         }
     }

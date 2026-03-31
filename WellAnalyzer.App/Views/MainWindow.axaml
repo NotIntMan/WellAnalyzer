@@ -26,6 +26,10 @@
             <Setter Property="Margin" Value="0,0,0,8" />
         </Style>
 
+        <Style Selector="TextBlock.status.error">
+            <Setter Property="Foreground" Value="Red" />
+        </Style>
+
         <Style Selector="TextBlock.section-title">
             <Setter Property="FontWeight" Value="SemiBold" />
             <Setter Property="Margin" Value="0,12,0,8" />
@@ -54,7 +58,7 @@
             <Button Classes="toolbar" Content="Экспорт JSON" Command="{Binding ExportJsonCommand}" />
         </StackPanel>
 
-        <TextBlock Grid.Row="1" Classes="status" Text="{Binding StatusMessage}" />
+        <TextBlock Grid.Row="1" Classes.status="True" Classes.error="{Binding IsStatusError}" Text="{Binding StatusMessage}" />
 
         <TextBlock Grid.Row="2" Classes="section-title" Text="Сводка по скважинам" />
 
