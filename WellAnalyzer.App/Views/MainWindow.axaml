@@ -1,0 +1,94 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:WellAnalyzer.App.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="900" d:DesignHeight="600"
+        x:Class="WellAnalyzer.App.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="WellAnalyzer"
+        Width="900" MinWidth="900"
+        Height="600" MinHeight="600">
+
+    <Window.Styles>
+        <Style Selector="StackPanel.toolbar">
+            <Setter Property="Margin" Value="0,0,0,8" />
+        </Style>
+
+        <Style Selector="Button.toolbar">
+            <Setter Property="MinWidth" Value="140" />
+        </Style>
+
+        <Style Selector="TextBlock.status">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Opacity" Value="0.8" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+        </Style>
+
+        <Style Selector="TextBlock.status.error">
+            <Setter Property="Foreground" Value="Red" />
+        </Style>
+
+        <Style Selector="TextBlock.section-title">
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="0,12,0,8" />
+        </Style>
+
+        <Style Selector="DataGrid.data-section">
+            <Setter Property="IsReadOnly" Value="True" />
+            <Setter Property="AutoGenerateColumns" Value="False" />
+            <Setter Property="HeadersVisibility" Value="Column" />
+            <Setter Property="GridLinesVisibility" Value="All" />
+        </Style>
+    </Window.Styles>
+
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="{Binding SummariesRowHeight}" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="{Binding ErrorsRowHeight}" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Classes="toolbar" Orientation="Horizontal" Spacing="8">
+            <Button Classes="toolbar" Content="Импорт CSV" Command="{Binding ImportCsvCommand}" />
+            <Button Classes="toolbar" Content="Экспорт JSON" Command="{Binding ExportJsonCommand}" />
+        </StackPanel>
+
+        <TextBlock Grid.Row="1" Classes.status="True" Classes.error="{Binding IsStatusError}" Text="{Binding StatusMessage}" />
+
+        <TextBlock Grid.Row="2" Classes="section-title" Text="Сводка по скважинам" />
+
+        <DataGrid Grid.Row="3"
+                  Classes="data-section"
+                  ItemsSource="{Binding Summaries}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Скважина" Binding="{Binding WellId}" />
+                <DataGridTextColumn Header="Общая глубина" Binding="{Binding TotalDepth}" />
+                <DataGridTextColumn Header="Количество интервалов" Binding="{Binding IntervalCount}" />
+                <DataGridTextColumn Header="Средняя пористость"
+                                    Binding="{Binding WeightedAveragePorosity, StringFormat='{}{0:F4}'}" />
+                <DataGridTextColumn Header="Основная порода" Binding="{Binding DominantRock}" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <TextBlock Grid.Row="4"
+                   Classes="section-title"
+                   Text="Ошибки валидации"
+                   IsVisible="{Binding HasErrors}" />
+
+        <DataGrid Grid.Row="5"
+                  Classes="data-section"
+                  ItemsSource="{Binding Errors}"
+                  IsVisible="{Binding HasErrors}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Строка" Binding="{Binding LineNumber}" />
+                <DataGridTextColumn Header="Скважина" Binding="{Binding WellId}" />
+                <DataGridTextColumn Header="Ошибка" Binding="{Binding Description}" Width="*" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>
