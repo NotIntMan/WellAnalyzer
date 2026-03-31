@@ -88,6 +88,7 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             IsStatusError = true;
             StatusMessage = $"Ошибка импорта: {ex.Message}";
+            await _dialogService.ShowErrorDialogAsync("Ошибка импорта", ex.Message);
         }
     }
 
@@ -121,6 +122,7 @@ public partial class MainWindowViewModel : ViewModelBase
         {
             IsStatusError = true;
             StatusMessage = $"Ошибка экспорта: {ex.Message}";
+            await _dialogService.ShowErrorDialogAsync("Ошибка экспорта", ex.Message);
         }
     }
 }

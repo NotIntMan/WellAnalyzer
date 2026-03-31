@@ -27,7 +27,7 @@ public partial class App : Application
 
             var mainWindow = new MainWindow();
             mainWindow.DataContext = new MainWindowViewModel(
-                new DialogService(mainWindow.StorageProvider),
+                new DialogService(mainWindow),
                 new CsvParser(),
                 new WellValidator(),
                 new WellSummaryCalculator(),

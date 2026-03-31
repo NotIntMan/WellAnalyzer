@@ -1,4 +1,7 @@
+using Avalonia.Controls;
 using Avalonia.Platform.Storage;
+using MsBox.Avalonia;
+using MsBox.Avalonia.Enums;
 
 namespace WellAnalyzer.App.Services;
 
@@ -6,11 +9,13 @@ using System.Threading.Tasks;
 
 public class DialogService
 {
+    private readonly Window _owner;
     private readonly IStorageProvider _storageProvider;
 
-    public DialogService(IStorageProvider storageProvider)
+    public DialogService(Window owner)
     {
-        _storageProvider = storageProvider;
+        _owner = owner;
+        _storageProvider = owner.StorageProvider;
     }
 
     public async Task<IStorageFile?> PickCsvToReadAsync()
@@ -39,5 +44,11 @@ public class DialogService
                 new FilePickerFileType("JSON") { Patterns = ["*.json"] }
             ]
         });
+    }
+
+    public async Task ShowErrorDialogAsync(string title, string message)
+    {
+        var box = MessageBoxManager.GetMessageBoxStandard(title, message, ButtonEnum.Ok, Icon.Error);
+        await box.ShowWindowDialogAsync(_owner);
     }
 }
