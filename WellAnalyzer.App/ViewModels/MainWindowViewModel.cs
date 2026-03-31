@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Avalonia.Controls;
-using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using WellAnalyzer.App.Services;
 using WellAnalyzer.Core.Models;
 using WellAnalyzer.Core.Services;
 
@@ -12,7 +12,7 @@ namespace WellAnalyzer.App.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
-    private readonly IStorageProvider _storageProvider;
+    private readonly DialogService _dialogService;
     private readonly CsvParser _csvParser;
     private readonly WellValidator _validator;
     private readonly WellSummaryCalculator _calculator;
@@ -43,14 +43,14 @@ public partial class MainWindowViewModel : ViewModelBase
             : new GridLength(0);
 
     public MainWindowViewModel(
-        IStorageProvider storageProvider,
+        DialogService dialogService,
         CsvParser csvParser,
         WellValidator validator,
         WellSummaryCalculator calculator,
         WellSummaryExporter exporter
     )
     {
-        _storageProvider = storageProvider;
+        _dialogService = dialogService;
         _csvParser = csvParser;
         _validator = validator;
         _calculator = calculator;
@@ -62,22 +62,14 @@ public partial class MainWindowViewModel : ViewModelBase
     {
         try
         {
-            var files = await _storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
-            {
-                Title = "Выберите CSV-файл",
-                AllowMultiple = false,
-                FileTypeFilter =
-                [
-                    new FilePickerFileType("CSV") { Patterns = ["*.csv"] }
-                ]
-            });
+            var file = await _dialogService.PickCsvToReadAsync();
 
-            if (files.Count == 0)
+            if (file is null)
             {
                 return;
             }
 
-            var filePath = files[0].Path.LocalPath;
+            var filePath = file.Path.LocalPath;
 
             var (summaries, errors) = await Task.Run(async () =>
             {
@@ -109,15 +101,7 @@ public partial class MainWindowViewModel : ViewModelBase
                 return;
             }
 
-            var file = await _storageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
-            {
-                Title = "Сохранить сводку в JSON",
-                DefaultExtension = "json",
-                FileTypeChoices =
-                [
-                    new FilePickerFileType("JSON") { Patterns = ["*.json"] }
-                ]
-            });
+            var file = await _dialogService.PickJsonToWriteAsync();
 
             if (file is null)
             {

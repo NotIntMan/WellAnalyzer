@@ -1,9 +1,9 @@
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using System.Linq;
 using Avalonia.Markup.Xaml;
+using WellAnalyzer.App.Services;
 using WellAnalyzer.App.ViewModels;
 using WellAnalyzer.App.Views;
 using WellAnalyzer.Core.Services;
@@ -27,7 +27,7 @@ public partial class App : Application
 
             var mainWindow = new MainWindow();
             mainWindow.DataContext = new MainWindowViewModel(
-                mainWindow.StorageProvider,
+                new DialogService(mainWindow.StorageProvider),
                 new CsvParser(),
                 new WellValidator(),
                 new WellSummaryCalculator(),
